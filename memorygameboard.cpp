@@ -2,8 +2,9 @@
 
 MemoryGameBoard::MemoryGameBoard(QObject *parent) :
     QGraphicsScene(parent),
-    _rows(2),
-    _columns(6),
+    _rows(3),
+    _columns(9),
+    _margin(5),
     _elapsedSteps(0),
     _lastRevealed(0),
     _canReveal(true)
@@ -59,32 +60,38 @@ QPixmap MemoryGameBoard::paintCard(char c, QColor bg, QColor fg, unsigned width,
 
 void MemoryGameBoard::startGame()
 {
-    qreal w = (qreal) sceneRect().width() / (qreal)_columns;
-    qreal h = (qreal) sceneRect().height() / (qreal)_rows;
+    qreal w = (qreal) (sceneRect().width() - 2 * _margin) / (qreal)_columns;
+    qreal h = (qreal) (sceneRect().height() - 2 * _margin) / (qreal)_rows;
 
     QFont font;
     font.setPixelSize(h - 30);
 
-    QPixmap backPixmap = paintCard('?', QColor(159, 206, 0, 255), QColor(255, 255, 255, 255), w - 20, h - 20);
+    QPixmap backPixmap = paintCard('?', QColor(159, 206, 0, 255), QColor(255, 255, 255, 255), w - _margin, h - _margin);
 
     QParallelAnimationGroup *group = new QParallelAnimationGroup(this);
     QList<char> chars = generateChars(_rows * _columns);
+    bool skipLast = (_rows * _columns) % 2;
 
     for (unsigned i = 0; i < _rows; i++)
     {
         for (unsigned j = 0; j < _columns; j++)
         {
+            if (skipLast && j == _columns - 1 && i == _rows - 1)
+            {
+                continue;
+            }
+
             char ch = chars[qrand() % chars.count()];
             chars.removeOne(ch);
 
-            MemoryCard *card = new MemoryCard(paintCard(ch, QColor(230, 230, 230, 255), QColor(20, 20, 20, 255), w - 20, h - 20),
+            MemoryCard *card = new MemoryCard(paintCard(ch, QColor(230, 230, 230, 255), QColor(20, 20, 20, 255), w - _margin, h - _margin),
                                               backPixmap,
                                               this,
                                               ch);
             QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(card);
             effect->setColor(QColor(0, 0, 0, 200));
             effect->setOffset(0);
-            effect->setBlurRadius(10);
+            effect->setBlurRadius(_margin * 1.2);
             card->setGraphicsEffect(effect);
 
             items.append(card);
@@ -92,8 +99,8 @@ void MemoryGameBoard::startGame()
             card->show();
 
             QPropertyAnimation *animation = new QPropertyAnimation(card, "pos", this);
-            animation->setStartValue(QPointF(j * w + 10, -100));
-            animation->setEndValue(QPointF(j * w + 10, i * h + 10));
+            animation->setStartValue(QPointF(j * w + _margin, -h));
+            animation->setEndValue(QPointF(j * w + _margin, i * h + _margin));
             animation->setDuration(1000);
             animation->setEasingCurve(QEasingCurve::OutBounce);
             group->addAnimation(animation);
@@ -119,6 +126,8 @@ void MemoryGameBoard::cardMatched()
 QList<char> MemoryGameBoard::generateChars(unsigned n)
 {
     QList<char> chars;
+    if (n % 2)
+        n--;
     unsigned i = 0;
     for (char c = '0'; i < n && c <= '9'; c+=1, i+=2)
     {

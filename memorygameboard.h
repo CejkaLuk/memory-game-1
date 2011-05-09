@@ -7,7 +7,7 @@
 class MemoryGameBoard : public QGraphicsScene
 {
     Q_OBJECT
-    unsigned _rows, _columns, _elapsedSteps;
+    unsigned _rows, _columns, _margin, _elapsedSteps;
     MemoryCard *_lastRevealed;
     bool _canReveal;
     QList<MemoryCard*> items;
