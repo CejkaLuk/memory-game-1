@@ -8,6 +8,7 @@ QT += core gui
 
 TARGET = memory-game
 TEMPLATE = app
+INSTALLS = target
 
 SOURCES += \
     main.cpp\
@@ -23,3 +24,9 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+unix {
+    target.path = /usr/bin
+}
+maemo5 {
+    target.path = /opt/memory-game/bin
+}

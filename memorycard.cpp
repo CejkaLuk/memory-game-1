@@ -100,7 +100,7 @@ void MemoryCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void MemoryCard::flyOut()
 {
     QPropertyAnimation *animation = new QPropertyAnimation(this, "pos", this);
-    animation->setEndValue(QPoint(-_back.width(), -_back.height()));
+    animation->setEndValue(QPoint(- 10 * _back.width(), - 10 * _back.height()));
     animation->setDuration(400);
     animation->setEasingCurve(QEasingCurve::InElastic);
     connect(animation, SIGNAL(finished()), this, SIGNAL(matched()));

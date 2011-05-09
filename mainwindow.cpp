@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QGraphicsScene *scene = new QGraphicsScene(ui->graphicsView);
+    scene->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
+    ui->graphicsView->setScene(scene);
 }
 
 MainWindow::~MainWindow()
@@ -23,6 +26,7 @@ void MainWindow::startGame()
     ui->graphicsView->setScene(board);
     connect(board, SIGNAL(gameWon()), this, SLOT(onGameWon()));
     connect(board, SIGNAL(elapsedStepsChanged(uint)), this, SLOT(onElapsedStepsChanged(uint)));
+    board->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
     board->setSceneRect(ui->graphicsView->rect());
     board->startGame();
 }
