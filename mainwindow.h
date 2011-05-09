@@ -11,15 +11,14 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     unsigned _elapsedSteps;
+    Ui::MainWindow *ui;
+
+protected:
+    virtual void showEvent(QShowEvent *event);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-private:
-    Ui::MainWindow *ui;
-
-public slots:
 
 private slots:
     void onGameWon();
