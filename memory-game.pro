@@ -28,7 +28,8 @@ RESOURCES += \
     resources.qrc
 
 TRANSLATIONS += \
-    memory-game_hu_HU.ts
+    translations/memory-game_hu_HU.ts \
+    translations/memory-game_he_IL.ts
 
 unix {
     target.path = /usr/bin
