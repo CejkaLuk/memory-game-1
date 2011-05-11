@@ -38,7 +38,4 @@ public slots:
 
 };
 
-QDataStream &operator<<(QDataStream &stream, const MemoryCard &card);
-QDataStream &operator>>(QDataStream &stream, MemoryCard &card);
-
 #endif // MEMORYCARD_H
