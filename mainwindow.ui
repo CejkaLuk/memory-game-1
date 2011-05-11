@@ -97,6 +97,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>saveButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveGame()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>656</x>
+     <y>404</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>loadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadGame()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>747</x>
+     <y>404</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>startGame()</slot>
