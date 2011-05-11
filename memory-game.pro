@@ -24,9 +24,16 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+RESOURCES += \
+    resources.qrc
+
+TRANSLATIONS += \
+    memory-game_hu_HU.ts
+
 unix {
     target.path = /usr/bin
 }
 maemo5 {
     target.path = /opt/memory-game/bin
 }
+

@@ -30,7 +30,7 @@
       <item>
        <widget class="QLabel" name="stepsLabel">
         <property name="text">
-         <string>Steps so far: 0</string>
+         <string>Welcome to Memory Game!</string>
         </property>
        </widget>
       </item>

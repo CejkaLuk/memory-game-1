@@ -26,7 +26,7 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::startGame()
 {
-    if (_elapsedSteps && QMessageBox::No == QMessageBox::question(this, "Sure?", "Do you wish to abandon the current game?", QMessageBox::Yes, QMessageBox::No))
+    if (_elapsedSteps && QMessageBox::No == QMessageBox::question(this, tr("Sure?"), tr("Do you wish to abandon the current game?"), QMessageBox::Yes, QMessageBox::No))
         return;
 
     if (ui->graphicsView->scene())
@@ -43,7 +43,7 @@ void MainWindow::startGame()
 
 void MainWindow::onGameWon()
 {
-    QMessageBox::information(this, "You rock!", "Congratulations, you have won!", QMessageBox::Ok);
+    QMessageBox::information(this, tr("You rock!"), tr("Congratulations, you have won!"), QMessageBox::Ok);
     _elapsedSteps = 0;
     startGame();
 }
@@ -99,5 +99,5 @@ void MainWindow::surrender()
 void MainWindow::onElapsedStepsChanged(unsigned n)
 {
     _elapsedSteps = n;
-    ui->stepsLabel->setText("Elapsed steps: " + QString::number(n));
+    ui->stepsLabel->setText(tr("Steps so far: %1").arg(QString::number(n)));
 }

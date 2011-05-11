@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/translations">
+        <file>memory-game_hu_HU.qm</file>
+    </qresource>
+</RCC>
