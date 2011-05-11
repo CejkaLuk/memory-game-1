@@ -1,6 +1,13 @@
 #include "memorycard.h"
 #include "memorygameboard.h"
 
+MemoryCard::MemoryCard(QGraphicsScene *scene) :
+    QObject(scene),
+    QGraphicsPixmapItem(0, scene),
+    _isFace(false)
+{
+}
+
 MemoryCard::MemoryCard(const QPixmap &face, const QPixmap &back, QGraphicsScene *scene, unsigned id) :
     QObject(scene),
     QGraphicsPixmapItem(back, 0, scene),
@@ -57,7 +64,7 @@ void MemoryCard::setToFace()
     setPixmap(_face);
 }
 
-bool MemoryCard::isFace()
+bool MemoryCard::isFace() const
 {
     return _isFace;
 }
@@ -106,4 +113,17 @@ void MemoryCard::flyOut()
     connect(animation, SIGNAL(finished()), this, SIGNAL(matched()));
     connect(animation, SIGNAL(finished()), this, SLOT(deleteLater()));
     animation->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void MemoryCard::saveData(QDataStream &stream) const
+{
+    stream << _id << _face << _back << pos();
+}
+
+void MemoryCard::loadData(QDataStream &stream)
+{
+    QPointF pos;
+    stream >> _id >> _face >> _back >> pos;
+    setPos(pos);
+    setPixmap(_back);
 }

@@ -18,8 +18,11 @@ protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 public:
+    explicit MemoryCard(QGraphicsScene *scene);
     explicit MemoryCard(const QPixmap &face, const QPixmap &back, QGraphicsScene *scene, unsigned id);
-    bool isFace();
+    bool isFace() const;
+    void saveData(QDataStream &stream) const;
+    void loadData(QDataStream &stream);
 
 signals:
     void matched();
@@ -34,5 +37,8 @@ public slots:
     void flipToBack();
 
 };
+
+QDataStream &operator<<(QDataStream &stream, const MemoryCard &card);
+QDataStream &operator>>(QDataStream &stream, MemoryCard &card);
 
 #endif // MEMORYCARD_H

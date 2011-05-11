@@ -50,12 +50,47 @@ void MainWindow::onGameWon()
 
 void MainWindow::saveGame()
 {
+    QString fileName = QFileDialog::getSaveFileName(this);
+    if (!fileName.isEmpty())
+    {
+        if (QFile::exists(fileName))
+            QFile::remove(fileName);
 
+        QFile f(fileName);
+        f.open(QIODevice::WriteOnly);
+//        QByteArray array;
+        QDataStream stream(&f);
+
+        MemoryGameBoard *board = (MemoryGameBoard*)ui->graphicsView->scene();
+        board->saveData(stream);
+
+//        f.write(array);
+//        f.flush();
+        f.close();
+    }
 }
 
 void MainWindow::loadGame()
 {
+    QString fileName = QFileDialog::getOpenFileName(this);
+    if (!fileName.isEmpty())
+    {
+        if (ui->graphicsView->scene())
+            ui->graphicsView->scene()->deleteLater();
 
+        MemoryGameBoard *board = new MemoryGameBoard(this);
+        ui->graphicsView->setScene(board);
+        connect(board, SIGNAL(gameWon()), this, SLOT(onGameWon()));
+        connect(board, SIGNAL(elapsedStepsChanged(uint)), this, SLOT(onElapsedStepsChanged(uint)));
+        board->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
+        board->setSceneRect(ui->graphicsView->rect());
+
+        QFile f(fileName);
+        f.open(QIODevice::ReadOnly);
+        QDataStream stream(&f);
+        board->loadData(stream);
+        f.close();
+    }
 }
 
 void MainWindow::onElapsedStepsChanged(unsigned n)

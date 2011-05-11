@@ -141,3 +141,32 @@ QList<char> MemoryGameBoard::generateChars(unsigned n)
     }
     return chars;
 }
+
+void MemoryGameBoard::saveData(QDataStream &stream)
+{
+    stream << _rows << _columns << _margin << _elapsedSteps << items.count();
+    foreach(MemoryCard *card, items)
+        card->saveData(stream);
+}
+
+void MemoryGameBoard::loadData(QDataStream &stream)
+{
+    int cardCount;
+    stream >> _rows >> _columns >> _margin >> _elapsedSteps >> cardCount;
+    for (int i = 0; i < cardCount; i++)
+    {
+        MemoryCard *card = new MemoryCard(this);
+
+        card->loadData(stream);
+        QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(card);
+        effect->setColor(QColor(0, 0, 0, 200));
+        effect->setOffset(0);
+        effect->setBlurRadius(_margin * 1.2);
+        card->setGraphicsEffect(effect);
+
+        items.append(card);
+        connect(card, SIGNAL(matched()), this, SLOT(cardMatched()));
+        card->show();
+    }
+    _canReveal = true;
+}

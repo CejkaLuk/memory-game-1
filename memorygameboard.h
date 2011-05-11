@@ -17,8 +17,10 @@ public:
     MemoryCard *lastRevealed();
     void setLastRevealed(MemoryCard *card);
     bool canReveal();
-    static QPixmap paintCard(char c, QColor bg, QColor fg, unsigned width, unsigned height);
+    void saveData(QDataStream &stream);
+    void loadData(QDataStream &stream);
 
+    static QPixmap paintCard(char c, QColor bg, QColor fg, unsigned width, unsigned height);
     static QList<char> generateChars(unsigned n);
 
 signals:
