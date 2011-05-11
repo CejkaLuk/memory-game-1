@@ -7,11 +7,13 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName("memory-game");
     QApplication::setApplicationVersion("1.0");
 
-    QTranslator t;
-    t.load(QApplication::applicationName() + "_" + QLocale::system().name(), ":/translations");
+    QTranslator tQt, tApp;
+    tQt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    tApp.load(QApplication::applicationName() + "_" + QLocale::system().name(), ":/translations");
 
     QApplication a(argc, argv);
-    QApplication::installTranslator(&t);
+    QApplication::installTranslator(&tQt);
+    QApplication::installTranslator(&tApp);
 
     MainWindow w;
     w.show();
