@@ -11,7 +11,7 @@ MemoryGameBoard::MemoryGameBoard(QObject *parent) :
 {
 }
 
-MemoryCard *MemoryGameBoard::lastRevealed()
+MemoryCard *MemoryGameBoard::lastRevealed() const
 {
     return _lastRevealed;
 }
@@ -29,7 +29,7 @@ void MemoryGameBoard::setLastRevealed(MemoryCard *card)
     }
 }
 
-bool MemoryGameBoard::canReveal()
+bool MemoryGameBoard::canReveal() const
 {
     return _canReveal;
 }
@@ -113,7 +113,10 @@ void MemoryGameBoard::startGame()
 
 void MemoryGameBoard::surrenderGame()
 {
-
+    foreach (MemoryCard *card, items)
+        card->flipToFace();
+    _canReveal = false;
+    _lastRevealed = 0;
 }
 
 void MemoryGameBoard::cardMatched()
@@ -142,17 +145,17 @@ QList<char> MemoryGameBoard::generateChars(unsigned n)
     return chars;
 }
 
-void MemoryGameBoard::saveData(QDataStream &stream)
+void MemoryGameBoard::saveData(QDataStream &stream) const
 {
-    stream << _rows << _columns << _margin << _elapsedSteps << items.count();
+    stream << _rows << _columns << _margin << _elapsedSteps << _canReveal << items.count() << items.indexOf(_lastRevealed);
     foreach(MemoryCard *card, items)
         card->saveData(stream);
 }
 
 void MemoryGameBoard::loadData(QDataStream &stream)
 {
-    int cardCount;
-    stream >> _rows >> _columns >> _margin >> _elapsedSteps >> cardCount;
+    int cardCount, lastRevealedIndex;
+    stream >> _rows >> _columns >> _margin >> _elapsedSteps >> _canReveal >> cardCount >> lastRevealedIndex;
     for (int i = 0; i < cardCount; i++)
     {
         MemoryCard *card = new MemoryCard(this);
@@ -167,6 +170,8 @@ void MemoryGameBoard::loadData(QDataStream &stream)
         items.append(card);
         connect(card, SIGNAL(matched()), this, SLOT(cardMatched()));
         card->show();
+
+        if (i == lastRevealedIndex)
+            _lastRevealed = card;
     }
-    _canReveal = true;
 }

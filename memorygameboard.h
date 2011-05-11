@@ -14,10 +14,10 @@ class MemoryGameBoard : public QGraphicsScene
 
 public:
     explicit MemoryGameBoard(QObject *parent = 0);
-    MemoryCard *lastRevealed();
+    MemoryCard *lastRevealed() const;
     void setLastRevealed(MemoryCard *card);
-    bool canReveal();
-    void saveData(QDataStream &stream);
+    bool canReveal() const;
+    void saveData(QDataStream &stream) const;
     void loadData(QDataStream &stream);
 
     static QPixmap paintCard(char c, QColor bg, QColor fg, unsigned width, unsigned height);

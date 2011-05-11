@@ -25,6 +25,7 @@ private slots:
     void startGame();
     void loadGame();
     void saveGame();
+    void surrender();
     void onElapsedStepsChanged(unsigned n);
 };
 

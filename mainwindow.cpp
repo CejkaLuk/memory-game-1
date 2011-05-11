@@ -58,14 +58,11 @@ void MainWindow::saveGame()
 
         QFile f(fileName);
         f.open(QIODevice::WriteOnly);
-//        QByteArray array;
         QDataStream stream(&f);
 
         MemoryGameBoard *board = (MemoryGameBoard*)ui->graphicsView->scene();
         board->saveData(stream);
 
-//        f.write(array);
-//        f.flush();
         f.close();
     }
 }
@@ -91,6 +88,12 @@ void MainWindow::loadGame()
         board->loadData(stream);
         f.close();
     }
+}
+
+void MainWindow::surrender()
+{
+    MemoryGameBoard *board = (MemoryGameBoard*)ui->graphicsView->scene();
+    board->surrenderGame();
 }
 
 void MainWindow::onElapsedStepsChanged(unsigned n)

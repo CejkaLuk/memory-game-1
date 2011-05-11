@@ -117,13 +117,13 @@ void MemoryCard::flyOut()
 
 void MemoryCard::saveData(QDataStream &stream) const
 {
-    stream << _id << _face << _back << pos();
+    stream << _id << _face << _back << _isFace << pos();
 }
 
 void MemoryCard::loadData(QDataStream &stream)
 {
     QPointF pos;
-    stream >> _id >> _face >> _back >> pos;
+    stream >> _id >> _face >> _back >> _isFace >> pos;
     setPos(pos);
-    setPixmap(_back);
+    setPixmap(_isFace ? _face : _back);
 }

@@ -48,6 +48,19 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="surrenderButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Surrender</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="saveButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -129,10 +142,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>surrenderButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>surrender()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>565</x>
+     <y>404</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>startGame()</slot>
   <slot>saveGame()</slot>
   <slot>loadGame()</slot>
+  <slot>surrender()</slot>
  </slots>
 </ui>
