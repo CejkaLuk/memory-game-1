@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>translations/memory-game_he_IL.qm</file>
         <file>translations/memory-game_hu_HU.qm</file>
+        <file>installables/memory-game.png</file>
     </qresource>
 </RCC>

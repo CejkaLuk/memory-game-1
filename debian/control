@@ -1,0 +1,92 @@
+Source: memory-game
+Section: user/games
+Priority: extra
+Maintainer: Timur Kristóf (Venemo) <venemo@fedoraproject.org>
+Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.5)
+Standards-Version: 3.7.3
+Homepage: https://gitorious.org/colorful-apps/memory-game/
+
+Package: memory-game
+Architecture: any
+Depends: ${shlibs:Depends}
+XB-Maemo-Display-Name: Memory Game
+Description: Simple and good-looking memory game
+ This is a simple and good looking memory game that
+ lays out cards and then you have to find the matching
+ symbols.
+ It is a variant of the classic memory game
+ http://en.wikipedia.org/wiki/Memory_%28game%29
+ This application is licensed under the terms of the
+ European Union Public License (EUPL).
+ http://www.osor.eu/eupl
+XB-Maemo-Upgrade-Description: Wonderful new features!
+ Install this upgrade to get your hands on the new features of Memory Game!
+XSBC-Bugtracker: http://talk.maemo.org/showthread.php?t=57049
+XB-Maemo-Icon-26:
+ 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
+ RK5CYII=
+ ====
+

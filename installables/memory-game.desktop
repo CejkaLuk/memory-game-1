@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=Memory Game
+Icon=memory-game
+Exec=memory-game
+Categories=Qt;Game;LogicGame;
+X-Osso-Type=application/x-executable

@@ -1,0 +1,4 @@
+#!/bin/sh
+chmod +x /opt/memory-game/memory-game
+ln -s /opt/memory-game/memory-game /usr/bin/
+echo "Memory Game installed - enjoy!"
