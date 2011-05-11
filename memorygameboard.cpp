@@ -2,9 +2,15 @@
 
 MemoryGameBoard::MemoryGameBoard(QObject *parent) :
     QGraphicsScene(parent),
+    #if defined(Q_WS_MAEMO_5)
+    _rows(3),
+    _columns(7),
+    _margin(5),
+    #else
     _rows(3),
     _columns(9),
     _margin(5),
+    #endif
     _elapsedSteps(0),
     _lastRevealed(0),
     _canReveal(true)
