@@ -2,6 +2,14 @@
 #include "ui_mainwindow.h"
 #include "memorygameboard.h"
 
+#if defined(Q_WS_MAEMO_5)
+#include <QtMaemo5/QtMaemo5>
+#endif
+
+#if defined(HAVE_OPENGL)
+#include <QtOpenGL>
+#endif
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _elapsedSteps(0),
@@ -11,6 +19,24 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *scene = new QGraphicsScene(ui->graphicsView);
     scene->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
     ui->graphicsView->setScene(scene);
+
+#if defined(MOBILE)
+    ui->surrenderButton->hide();
+    ui->newGameButton->hide();
+    ui->saveButton->hide();
+    ui->loadButton->hide();
+    ui->stepsLabel->hide();
+
+    ui->graphicsView->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing);
+    ui->graphicsView->setOptimizationFlag(QGraphicsView::DontSavePainterState);
+    ui->graphicsView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+#else
+    ui->menuBar->hide();
+#endif
+
+#if defined(HAVE_OPENGL)
+    ui->graphicsView->setViewport(new QGLWidget(ui->graphicsView));
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -43,7 +69,11 @@ void MainWindow::startGame()
 
 void MainWindow::onGameWon()
 {
+#if defined(Q_WS_MAEMO_5)
+    QMaemo5InformationBox::information(0, "<b>" + tr("You rock!") + "</b><br />" + tr("Congratulations, you have won!"));
+#else
     QMessageBox::information(this, tr("You rock!"), tr("Congratulations, you have won!"), QMessageBox::Ok);
+#endif
     _elapsedSteps = 0;
     startGame();
 }
@@ -99,5 +129,10 @@ void MainWindow::surrender()
 void MainWindow::onElapsedStepsChanged(unsigned n)
 {
     _elapsedSteps = n;
-    ui->stepsLabel->setText(tr("Steps so far: %1").arg(QString::number(n)));
+    QString text = tr("Steps so far: %1").arg(QString::number(n));
+#if defined(MOBILE)
+    setWindowTitle(text);
+#else
+    ui->stepsLabel->setText(text);
+#endif
 }

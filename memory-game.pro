@@ -4,11 +4,12 @@
 #
 #-------------------------------------------------
 
-QT += core gui
+QT += core gui opengl
 
 TARGET = memory-game
 TEMPLATE = app
 INSTALLS = target
+DEFINES += HAVE_OPENGL
 
 SOURCES += \
     main.cpp\
@@ -47,12 +48,20 @@ unix {
     desktopfile.files = installables/memory-game.desktop
 }
 maemo5 {
+    QT += maemo5 opengl
+    DEFINES += MOBILE
+
     target.path = /opt/memory-game
     desktopfile.path = /usr/share/applications/hildon
 }
 win32 {
+    DEFINES -= HAVE_OPENGL
+    QT -= opengl
     RC_FILE = memory-game.rc
 }
 wince {
+    DEFINES -= HAVE_OPENGL
+    QT -= opengl
+    DEFINES += MOBILE
     RC_FILE = memory-game.rc
 }
