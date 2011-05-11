@@ -72,6 +72,8 @@ void MemoryGameBoard::startGame()
     QList<char> chars = generateChars(_rows * _columns);
     bool skipLast = (_rows * _columns) % 2;
 
+    qsrand(QTime::currentTime().msec());
+
     for (unsigned i = 0; i < _rows; i++)
     {
         for (unsigned j = 0; j < _columns; j++)

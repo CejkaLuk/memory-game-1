@@ -1,5 +1,4 @@
 #include <QtGui>
-#include <time.h>
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
@@ -17,7 +16,6 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
-    qsrand(time(0));
 
     return a.exec();
 }
