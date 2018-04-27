@@ -32,7 +32,7 @@ void MemoryCard::flip(const char *slotName)
 
     QPropertyAnimation *posAnimation = new QPropertyAnimation(this, "pos", this);
     posAnimation->setStartValue(pos());
-    posAnimation->setKeyValueAt(0.5, QPoint(x() + (_back.width() * 0.1), y() + (_back.height() * 0.1)));
+    posAnimation->setKeyValueAt(0.5, QPointF(x() + (_back.width() * 0.1), y() + (_back.height() * 0.1)));
     posAnimation->setEndValue(pos());
     posAnimation->setDuration(200);
     posAnimation->setEasingCurve(QEasingCurve::OutInExpo);
@@ -79,7 +79,7 @@ bool MemoryCard::isFace() const
 
 void MemoryCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    MemoryGameBoard *board = (MemoryGameBoard*)scene();
+    MemoryGameBoard *board = static_cast<MemoryGameBoard*>(scene());
 
     if (!_isFace && board->canReveal())
     {
@@ -88,7 +88,7 @@ void MemoryCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if (board->lastRevealed())
         {
             MemoryCard *other = board->lastRevealed();
-            board->setLastRevealed(0);
+            board->setLastRevealed(nullptr);
 
             if (this->_id == other->_id)
             {

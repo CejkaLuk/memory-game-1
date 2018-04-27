@@ -47,21 +47,8 @@ unix {
     desktopfile.path = /usr/share/applications
     desktopfile.files = installables/memory-game.desktop
 }
-maemo5 {
-    QT += maemo5 opengl
-    DEFINES += MOBILE
-
-    target.path = /opt/memory-game
-    desktopfile.path = /usr/share/applications/hildon
-}
 win32 {
     DEFINES -= HAVE_OPENGL
     QT -= opengl
-    RC_FILE = memory-game.rc
-}
-wince {
-    DEFINES -= HAVE_OPENGL
-    QT -= opengl
-    DEFINES += MOBILE
     RC_FILE = memory-game.rc
 }
