@@ -7,44 +7,44 @@
 
 MemoryGameBoard::MemoryGameBoard(QObject *parent) :
     QGraphicsScene(parent),
-    _rows(3),
-    _columns(9),
-    _margin(5),
-    _elapsedSteps(0),
-    _lastRevealed(0),
-    _canReveal(true)
+    m_rows(3),
+    m_columns(9),
+    m_margin(5),
+    m_elapsedSteps(0),
+    m_lastRevealed(nullptr),
+    m_canReveal(true)
 {
 }
 
 MemoryCard *MemoryGameBoard::lastRevealed() const
 {
-    return _lastRevealed;
+    return m_lastRevealed;
 }
 
 void MemoryGameBoard::setLastRevealed(MemoryCard *card)
 {
-    if (_canReveal)
+    if (m_canReveal)
     {
-        if (card == 0)
+        if (!card)
         {
-            _canReveal = false;
-            emit elapsedStepsChanged(++_elapsedSteps);
+            m_canReveal = false;
+            emit elapsedStepsChanged(++m_elapsedSteps);
         }
-        _lastRevealed = card;
+        m_lastRevealed = card;
     }
 }
 
 bool MemoryGameBoard::canReveal() const
 {
-    return _canReveal;
+    return m_canReveal;
 }
 
 void MemoryGameBoard::enableReveal()
 {
-    _canReveal = true;
+    m_canReveal = true;
 }
 
-QPixmap MemoryGameBoard::paintCard(char c, QColor bg, QColor fg, unsigned width, unsigned height)
+QPixmap MemoryGameBoard::paintCard(char c, QColor bg, QColor fg, int width, int height)
 {
     QFont font;
     font.setPixelSize(height - 15);
@@ -65,25 +65,27 @@ QPixmap MemoryGameBoard::paintCard(char c, QColor bg, QColor fg, unsigned width,
 
 void MemoryGameBoard::startGame()
 {
-    qreal w = (qreal) (sceneRect().width() - 2 * _margin) / (qreal)_columns;
-    qreal h = (qreal) (sceneRect().height() - 2 * _margin) / (qreal)_rows;
+    qreal ww = static_cast<qreal>(sceneRect().width() - 2 * m_margin) / static_cast<qreal>(m_columns);
+    qreal hh = static_cast<qreal>(sceneRect().height() - 2 * m_margin) / static_cast<qreal>(m_rows);
+    int h = static_cast<int>(hh);
+    int w = static_cast<int>(ww);
 
     QFont font;
     font.setPixelSize(h - 30);
 
-    QPixmap backPixmap = paintCard('?', QColor(159, 206, 0, 255), QColor(255, 255, 255, 255), w - _margin, h - _margin);
+    QPixmap backPixmap = paintCard('?', QColor(159, 206, 0, 255), QColor(255, 255, 255, 255), w - m_margin, h - m_margin);
 
     QParallelAnimationGroup *group = new QParallelAnimationGroup(this);
-    QList<char> chars = generateChars(_rows * _columns);
-    bool skipLast = (_rows * _columns) % 2;
+    QList<char> chars = generateChars(m_rows * m_columns);
+    bool skipLast = (m_rows * m_columns) % 2;
 
-    qsrand(QTime::currentTime().msec());
+    qsrand(static_cast<quint32>(QTime::currentTime().msec()));
 
-    for (unsigned i = 0; i < _rows; i++)
+    for (int i = 0; i < m_rows; i++)
     {
-        for (unsigned j = 0; j < _columns; j++)
+        for (int j = 0; j < m_columns; j++)
         {
-            if (skipLast && j == _columns - 1 && i == _rows - 1)
+            if (skipLast && j == m_columns - 1 && i == m_rows - 1)
             {
                 continue;
             }
@@ -91,23 +93,23 @@ void MemoryGameBoard::startGame()
             char ch = chars[qrand() % chars.count()];
             chars.removeOne(ch);
 
-            MemoryCard *card = new MemoryCard(paintCard(ch, QColor(230, 230, 230, 255), QColor(20, 20, 20, 255), w - _margin, h - _margin),
+            MemoryCard *card = new MemoryCard(paintCard(ch, QColor(230, 230, 230, 255), QColor(20, 20, 20, 255), w - m_margin, h - m_margin),
                                               backPixmap,
                                               this,
                                               ch);
             QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(card);
             effect->setColor(QColor(0, 0, 0, 200));
             effect->setOffset(0);
-            effect->setBlurRadius(_margin * 1.2);
+            effect->setBlurRadius(m_margin * 1.2);
             card->setGraphicsEffect(effect);
 
-            items.append(card);
-            connect(card, SIGNAL(matched()), this, SLOT(cardMatched()));
+            m_items.append(card);
+            connect(card, &MemoryCard::matched, this, &MemoryGameBoard::cardMatched);
             card->show();
 
             QPropertyAnimation *animation = new QPropertyAnimation(card, "pos", this);
-            animation->setStartValue(QPointF(j * w + _margin, -h));
-            animation->setEndValue(QPointF(j * w + _margin, i * h + _margin));
+            animation->setStartValue(QPointF(j * w + m_margin, -h));
+            animation->setEndValue(QPointF(j * w + m_margin, i * h + m_margin));
             animation->setDuration(1000);
             animation->setEasingCurve(QEasingCurve::OutBounce);
             group->addAnimation(animation);
@@ -120,25 +122,26 @@ void MemoryGameBoard::startGame()
 
 void MemoryGameBoard::surrenderGame()
 {
-    foreach (MemoryCard *card, items)
+    foreach (MemoryCard *card, m_items)
         card->flipToFace();
-    _canReveal = false;
-    _lastRevealed = 0;
+    m_canReveal = false;
+    m_lastRevealed = nullptr;
 }
 
 void MemoryGameBoard::cardMatched()
 {
-    items.removeOne((MemoryCard*)sender());
-    if (items.count() == 0)
+    auto *card = qobject_cast<MemoryCard*>(sender());
+    m_items.removeOne(card);
+    if (m_items.count() == 0)
         emit gameWon();
 }
 
-QList<char> MemoryGameBoard::generateChars(unsigned n)
+QList<char> MemoryGameBoard::generateChars(int n)
 {
     QList<char> chars;
     if (n % 2)
         n--;
-    unsigned i = 0;
+    int i = 0;
     for (char c = '0'; i < n && c <= '9'; c+=1, i+=2)
     {
         chars.push_back(c);
@@ -154,15 +157,15 @@ QList<char> MemoryGameBoard::generateChars(unsigned n)
 
 void MemoryGameBoard::saveData(QDataStream &stream) const
 {
-    stream << _rows << _columns << _margin << _elapsedSteps << _canReveal << items.count() << items.indexOf(_lastRevealed);
-    foreach(MemoryCard *card, items)
+    stream << m_rows << m_columns << m_margin << m_elapsedSteps << m_canReveal << m_items.count() << m_items.indexOf(m_lastRevealed);
+    foreach(MemoryCard *card, m_items)
         card->saveData(stream);
 }
 
 void MemoryGameBoard::loadData(QDataStream &stream)
 {
     int cardCount, lastRevealedIndex;
-    stream >> _rows >> _columns >> _margin >> _elapsedSteps >> _canReveal >> cardCount >> lastRevealedIndex;
+    stream >> m_rows >> m_columns >> m_margin >> m_elapsedSteps >> m_canReveal >> cardCount >> lastRevealedIndex;
     for (int i = 0; i < cardCount; i++)
     {
         MemoryCard *card = new MemoryCard(this);
@@ -171,14 +174,14 @@ void MemoryGameBoard::loadData(QDataStream &stream)
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(card);
         effect->setColor(QColor(0, 0, 0, 200));
         effect->setOffset(0);
-        effect->setBlurRadius(_margin * 1.2);
+        effect->setBlurRadius(m_margin * 1.2);
         card->setGraphicsEffect(effect);
 
-        items.append(card);
-        connect(card, SIGNAL(matched()), this, SLOT(cardMatched()));
+        m_items.append(card);
+        connect(card, &MemoryCard::matched, this, &MemoryGameBoard::cardMatched);
         card->show();
 
         if (i == lastRevealedIndex)
-            _lastRevealed = card;
+            m_lastRevealed = card;
     }
 }

@@ -7,24 +7,24 @@
 class MemoryGameBoard : public QGraphicsScene
 {
     Q_OBJECT
-    unsigned _rows, _columns, _margin, _elapsedSteps;
-    MemoryCard *_lastRevealed;
-    bool _canReveal;
-    QList<MemoryCard*> items;
+    int m_rows, m_columns, m_margin, m_elapsedSteps;
+    MemoryCard *m_lastRevealed;
+    bool m_canReveal;
+    QList<MemoryCard*> m_items;
 
 public:
-    explicit MemoryGameBoard(QObject *parent = 0);
+    explicit MemoryGameBoard(QObject *parent = nullptr);
     MemoryCard *lastRevealed() const;
     void setLastRevealed(MemoryCard *card);
     bool canReveal() const;
     void saveData(QDataStream &stream) const;
     void loadData(QDataStream &stream);
 
-    static QPixmap paintCard(char c, QColor bg, QColor fg, unsigned width, unsigned height);
-    static QList<char> generateChars(unsigned n);
+    static QPixmap paintCard(char c, QColor bg, QColor fg, int width, int height);
+    static QList<char> generateChars(int n);
 
 signals:
-    void elapsedStepsChanged(unsigned n);
+    void elapsedStepsChanged(int n);
     void gameWon();
 
 public slots:

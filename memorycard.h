@@ -4,14 +4,16 @@
 #include <QtCore/QObject>
 #include <QtWidgets/QGraphicsPixmapItem>
 
+class MemoryGameBoard;
+
 class MemoryCard : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
     Q_PROPERTY(qreal scale READ scale WRITE setScale)
-    QPixmap _face, _back;
-    bool _isFace;
-    unsigned _id;
+    QPixmap m_face, m_back;
+    bool m_isFace;
+    int m_id;
 
     void flip(const char *slotName);
 
@@ -19,8 +21,8 @@ protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 public:
-    explicit MemoryCard(QGraphicsScene *scene);
-    explicit MemoryCard(const QPixmap &face, const QPixmap &back, QGraphicsScene *scene, unsigned id);
+    explicit MemoryCard(MemoryGameBoard *scene);
+    explicit MemoryCard(const QPixmap &face, const QPixmap &back, MemoryGameBoard *scene, int id);
     bool isFace() const;
     void saveData(QDataStream &stream) const;
     void loadData(QDataStream &stream);

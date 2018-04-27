@@ -8,7 +8,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    _elapsedSteps(0),
+    m_elapsedSteps(0),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -36,7 +36,7 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::startGame()
 {
-    if (_elapsedSteps && QMessageBox::No == QMessageBox::question(this, tr("Sure?"), tr("Do you wish to abandon the current game?"), QMessageBox::Yes, QMessageBox::No))
+    if (m_elapsedSteps && QMessageBox::No == QMessageBox::question(this, tr("Sure?"), tr("Do you wish to abandon the current game?"), QMessageBox::Yes, QMessageBox::No))
         return;
 
     if (ui->graphicsView->scene())
@@ -44,8 +44,8 @@ void MainWindow::startGame()
 
     MemoryGameBoard *board = new MemoryGameBoard(this);
     ui->graphicsView->setScene(board);
-    connect(board, SIGNAL(gameWon()), this, SLOT(onGameWon()));
-    connect(board, SIGNAL(elapsedStepsChanged(uint)), this, SLOT(onElapsedStepsChanged(uint)));
+    connect(board, &MemoryGameBoard::gameWon, this, &MainWindow::onGameWon);
+    connect(board, &MemoryGameBoard::elapsedStepsChanged, this, &MainWindow::onElapsedStepsChanged);
     board->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
     board->setSceneRect(ui->graphicsView->rect());
     board->startGame();
@@ -54,7 +54,7 @@ void MainWindow::startGame()
 void MainWindow::onGameWon()
 {
     QMessageBox::information(this, tr("You rock!"), tr("Congratulations, you have won!"), QMessageBox::Ok);
-    _elapsedSteps = 0;
+    m_elapsedSteps = 0;
     startGame();
 }
 
@@ -87,8 +87,8 @@ void MainWindow::loadGame()
 
         MemoryGameBoard *board = new MemoryGameBoard(this);
         ui->graphicsView->setScene(board);
-        connect(board, SIGNAL(gameWon()), this, SLOT(onGameWon()));
-        connect(board, SIGNAL(elapsedStepsChanged(uint)), this, SLOT(onElapsedStepsChanged(uint)));
+        connect(board, &MemoryGameBoard::gameWon, this, &MainWindow::onGameWon);
+        connect(board, &MemoryGameBoard::elapsedStepsChanged, this, &MainWindow::onElapsedStepsChanged);
         board->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
         board->setSceneRect(ui->graphicsView->rect());
 
@@ -108,7 +108,7 @@ void MainWindow::surrender()
 
 void MainWindow::onElapsedStepsChanged(unsigned n)
 {
-    _elapsedSteps = n;
+    m_elapsedSteps = n;
     QString text = tr("Steps so far: %1").arg(QString::number(n));
     ui->stepsLabel->setText(text);
 }

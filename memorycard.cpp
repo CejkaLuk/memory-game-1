@@ -6,22 +6,21 @@
 #include <QtCore/QTimer>
 #include <QtWidgets/QGraphicsSceneMouseEvent>
 
-
-MemoryCard::MemoryCard(QGraphicsScene *scene) :
+MemoryCard::MemoryCard(MemoryGameBoard *scene) :
     QObject(nullptr),
     QGraphicsPixmapItem(nullptr),
-    _isFace(false)
+    m_isFace(false)
 {
     scene->addItem(this);
 }
 
-MemoryCard::MemoryCard(const QPixmap &face, const QPixmap &back, QGraphicsScene *scene, unsigned id) :
+MemoryCard::MemoryCard(const QPixmap &face, const QPixmap &back, MemoryGameBoard *scene, int id) :
     QObject(nullptr),
     QGraphicsPixmapItem(back, nullptr),
-    _face(face),
-    _back(back),
-    _isFace(false),
-    _id(id)
+    m_face(face),
+    m_back(back),
+    m_isFace(false),
+    m_id(id)
 {
     scene->addItem(this);
 }
@@ -32,7 +31,7 @@ void MemoryCard::flip(const char *slotName)
 
     QPropertyAnimation *posAnimation = new QPropertyAnimation(this, "pos", this);
     posAnimation->setStartValue(pos());
-    posAnimation->setKeyValueAt(0.5, QPointF(x() + (_back.width() * 0.1), y() + (_back.height() * 0.1)));
+    posAnimation->setKeyValueAt(0.5, QPointF(x() + (m_back.width() * 0.1), y() + (m_back.height() * 0.1)));
     posAnimation->setEndValue(pos());
     posAnimation->setDuration(200);
     posAnimation->setEasingCurve(QEasingCurve::OutInExpo);
@@ -62,26 +61,26 @@ void MemoryCard::flipToFace()
 
 void MemoryCard::setToBack()
 {
-    _isFace = false;
-    setPixmap(_back);
+    m_isFace = false;
+    setPixmap(m_back);
 }
 
 void MemoryCard::setToFace()
 {
-    _isFace = true;
-    setPixmap(_face);
+    m_isFace = true;
+    setPixmap(m_face);
 }
 
 bool MemoryCard::isFace() const
 {
-    return _isFace;
+    return m_isFace;
 }
 
 void MemoryCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     MemoryGameBoard *board = static_cast<MemoryGameBoard*>(scene());
 
-    if (!_isFace && board->canReveal())
+    if (!m_isFace && board->canReveal())
     {
         flipToFace();
 
@@ -90,7 +89,7 @@ void MemoryCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
             MemoryCard *other = board->lastRevealed();
             board->setLastRevealed(nullptr);
 
-            if (this->_id == other->_id)
+            if (this->m_id == other->m_id)
             {
                 QTimer::singleShot(500, this, SLOT(flyOut()));
                 QTimer::singleShot(500, other, SLOT(flyOut()));
@@ -115,23 +114,23 @@ void MemoryCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void MemoryCard::flyOut()
 {
     QPropertyAnimation *animation = new QPropertyAnimation(this, "pos", this);
-    animation->setEndValue(QPoint(- 10 * _back.width(), - 10 * _back.height()));
+    animation->setEndValue(QPoint(- 10 * m_back.width(), - 10 * m_back.height()));
     animation->setDuration(400);
     animation->setEasingCurve(QEasingCurve::InElastic);
-    connect(animation, SIGNAL(finished()), this, SIGNAL(matched()));
-    connect(animation, SIGNAL(finished()), this, SLOT(deleteLater()));
+    connect(animation, &QAbstractAnimation::finished, this, &MemoryCard::matched);
+    connect(animation, &QAbstractAnimation::finished, this, &QObject::deleteLater);
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void MemoryCard::saveData(QDataStream &stream) const
 {
-    stream << _id << _face << _back << _isFace << pos();
+    stream << m_id << m_face << m_back << m_isFace << pos();
 }
 
 void MemoryCard::loadData(QDataStream &stream)
 {
     QPointF pos;
-    stream >> _id >> _face >> _back >> _isFace >> pos;
+    stream >> m_id >> m_face >> m_back >> m_isFace >> pos;
     setPos(pos);
-    setPixmap(_isFace ? _face : _back);
+    setPixmap(m_isFace ? m_face : m_back);
 }

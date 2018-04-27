@@ -10,15 +10,15 @@ namespace Ui {
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    unsigned _elapsedSteps;
+    unsigned m_elapsedSteps;
     Ui::MainWindow *ui;
 
 protected:
-    virtual void showEvent(QShowEvent *event);
+    virtual void showEvent(QShowEvent *event) override;
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
 private slots:
     void onGameWon();

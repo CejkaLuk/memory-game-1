@@ -1,10 +1,6 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2011-05-08T23:44:50
-#
-#-------------------------------------------------
 
 QT += core gui opengl widgets
+CONFIG += c++11
 
 TARGET = memory-game
 TEMPLATE = app
@@ -39,6 +35,7 @@ OTHER_FILES += \
     installables/memory-game.desktop
 
 unix {
+    QMAKE_CXXFLAGS += -Wall -Wextra
     INSTALLS += iconfile desktopfile
 
     target.path = /usr/bin
