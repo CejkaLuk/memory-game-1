@@ -1,7 +1,8 @@
 #ifndef MEMORYCARD_H
 #define MEMORYCARD_H
 
-#include <QtGui>
+#include <QtCore/QObject>
+#include <QtWidgets/QGraphicsPixmapItem>
 
 class MemoryCard : public QObject, public QGraphicsPixmapItem
 {

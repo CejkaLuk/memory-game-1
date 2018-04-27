@@ -1,21 +1,29 @@
 #include "memorycard.h"
 #include "memorygameboard.h"
 
+#include <QtCore/QPropertyAnimation>
+#include <QtCore/QParallelAnimationGroup>
+#include <QtCore/QTimer>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+
+
 MemoryCard::MemoryCard(QGraphicsScene *scene) :
-    QObject(scene),
-    QGraphicsPixmapItem(0, scene),
+    QObject(nullptr),
+    QGraphicsPixmapItem(nullptr),
     _isFace(false)
 {
+    scene->addItem(this);
 }
 
 MemoryCard::MemoryCard(const QPixmap &face, const QPixmap &back, QGraphicsScene *scene, unsigned id) :
-    QObject(scene),
-    QGraphicsPixmapItem(back, 0, scene),
+    QObject(nullptr),
+    QGraphicsPixmapItem(back, nullptr),
     _face(face),
     _back(back),
     _isFace(false),
     _id(id)
 {
+    scene->addItem(this);
 }
 
 void MemoryCard::flip(const char *slotName)

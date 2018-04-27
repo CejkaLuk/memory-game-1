@@ -1,7 +1,7 @@
 #ifndef MEMORYGAMEBOARD_H
 #define MEMORYGAMEBOARD_H
 
-#include <QtGui>
+#include <QtWidgets/QGraphicsScene>
 #include "memorycard.h"
 
 class MemoryGameBoard : public QGraphicsScene

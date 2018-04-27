@@ -1,4 +1,9 @@
 #include "memorygameboard.h"
+#include <QtGui/QPainter>
+#include <QtCore/QParallelAnimationGroup>
+#include <QtCore/QPropertyAnimation>
+#include <QtCore/QTime>
+#include <QtWidgets/QGraphicsDropShadowEffect>
 
 MemoryGameBoard::MemoryGameBoard(QObject *parent) :
     QGraphicsScene(parent),
