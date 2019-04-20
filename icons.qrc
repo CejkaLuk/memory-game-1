@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/quit.png</file>
+        <file>icons/surrender.png</file>
+        <file>icons/about.png</file>
+        <file>icons/newGame.png</file>
+        <file>icons/taskBarIcon.png</file>
+        <file>icons/taskBarIcon2.png</file>
+        <file>icons/loadGame.png</file>
+        <file>icons/saveGame.png</file>
+    </qresource>
+</RCC>
