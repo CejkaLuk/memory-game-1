@@ -1,51 +1,43 @@
+QT       += \
+         core gui \
+         widgets
 
-QT += core gui opengl widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = LukasCejkaMemoryGame
+TEMPLATE = app
+
+# The following define makes your compiler emit warnings if you use
+# any feature of Qt which has been marked as deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
+DEFINES += QT_DEPRECATED_WARNINGS
+
+# You can also make your code fail to compile if you use deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
 CONFIG += c++11
 
-TARGET = memory-game
-TEMPLATE = app
-INSTALLS = target
-DEFINES += HAVE_OPENGL
-
 SOURCES += \
-    main.cpp\
-    mainwindow.cpp \
-    memorycard.cpp \
-    memorygameboard.cpp
+        main.cpp \
+        mainwindow.cpp \
+        memorygameboard.cpp \
+    memorycard.cpp
 
 HEADERS += \
-    mainwindow.h \
-    memorycard.h \
-    memorygameboard.h
+        mainwindow.h \
+        memorygameboard.h \
+    memorycard.h
 
 FORMS += \
-    mainwindow.ui
+        mainwindow.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    resources.qrc
-
-TRANSLATIONS += \
-    translations/memory-game_hu_HU.ts \
-    translations/memory-game_he_IL.ts
-
-OTHER_FILES += \
-    readme.txt \
-    installables/memory-game.png \
-    installables/memory-game.ico \
-    installables/memory-game.desktop
-
-unix {
-    QMAKE_CXXFLAGS += -Wall -Wextra
-    INSTALLS += iconfile desktopfile
-
-    target.path = /usr/bin
-    iconfile.path = /usr/share/pixmaps
-    iconfile.files = installables/memory-game.png
-    desktopfile.path = /usr/share/applications
-    desktopfile.files = installables/memory-game.desktop
-}
-win32 {
-    DEFINES -= HAVE_OPENGL
-    QT -= opengl
-    RC_FILE = memory-game.rc
-}
+        icons.qrc

@@ -1,10 +1,8 @@
 #include "memorycard.h"
 #include "memorygameboard.h"
 
-#include <QtCore/QPropertyAnimation>
-#include <QtCore/QParallelAnimationGroup>
-#include <QtCore/QTimer>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <iostream>
+
 
 MemoryCard::MemoryCard(MemoryGameBoard *scene) :
     QObject(nullptr),
@@ -49,77 +47,49 @@ void MemoryCard::flip(const char *slotName)
     group->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
-void MemoryCard::flipToBack()
-{
-    flip(SLOT(setToBack()));
-}
-
-void MemoryCard::flipToFace()
-{
-    flip(SLOT(setToFace()));
-}
-
-void MemoryCard::setToBack()
-{
-    m_isFace = false;
-    setPixmap(m_back);
-}
-
-void MemoryCard::setToFace()
-{
-    m_isFace = true;
-    setPixmap(m_face);
-}
-
-bool MemoryCard::isFace() const
-{
-    return m_isFace;
-}
-
 void MemoryCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     MemoryGameBoard *board = static_cast<MemoryGameBoard*>(scene());
 
+    // MemoryCard is not facing up and we can reveal other cards
     if (!m_isFace && board->canReveal())
     {
+        // Flip the clicked on MemoryCard
         flipToFace();
 
-        if (board->lastRevealed())
+        // Board has another MemoryCard facing up
+        if (board->getLastRevealedCard())
         {
-            MemoryCard *other = board->lastRevealed();
-            board->setLastRevealed(nullptr);
+            MemoryCard *other = board->getLastRevealedCard();
+            board->setLastRevealedCard(nullptr);
 
+            // Cards match, make them both disappear and enable revealing of board. All after a certain time slot (in ms)
             if (this->m_id == other->m_id)
             {
-                QTimer::singleShot(500, this, SLOT(flyOut()));
-                QTimer::singleShot(500, other, SLOT(flyOut()));
+                QTimer::singleShot(500, this, SLOT(disappear()));
+                QTimer::singleShot(500, other, SLOT(disappear()));
                 QTimer::singleShot(900, board, SLOT(enableReveal()));
             }
+            // Cards didn't match, flip them face down, enable revealing of board, change the player. All with a larger time slot (in ms).
             else
             {
                 QTimer::singleShot(1000, this, SLOT(flipToBack()));
                 QTimer::singleShot(1000, other, SLOT(flipToBack()));
                 QTimer::singleShot(1000, board, SLOT(enableReveal()));
+                QTimer::singleShot(1000, board, SLOT(playerChange()));
             }
         }
+        // Flipped MemoryCard is the only MemoryCard facing up.
         else
-        {
-            board->setLastRevealed(this);
-        }
+            board->setLastRevealedCard(this);
     }
 
     event->accept();
 }
 
-void MemoryCard::flyOut()
+bool MemoryCard::isFace() const
 {
-    QPropertyAnimation *animation = new QPropertyAnimation(this, "pos", this);
-    animation->setEndValue(QPoint(- 10 * m_back.width(), - 10 * m_back.height()));
-    animation->setDuration(400);
-    animation->setEasingCurve(QEasingCurve::InElastic);
-    connect(animation, &QAbstractAnimation::finished, this, &MemoryCard::matched);
-    connect(animation, &QAbstractAnimation::finished, this, &QObject::deleteLater);
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
+    return m_isFace;
 }
 
 void MemoryCard::saveData(QDataStream &stream) const
@@ -133,4 +103,32 @@ void MemoryCard::loadData(QDataStream &stream)
     stream >> m_id >> m_face >> m_back >> m_isFace >> pos;
     setPos(pos);
     setPixmap(m_isFace ? m_face : m_back);
+}
+
+void MemoryCard::flipToBack()
+{
+    flip(SLOT(setToBack()));
+}
+
+void MemoryCard::flipToFace()
+{
+    flip(SLOT(setToFace()));
+}
+
+void MemoryCard::setToFace()
+{
+    m_isFace = true;
+    setPixmap(m_face);
+}
+
+void MemoryCard::setToBack()
+{
+    m_isFace = false;
+    setPixmap(m_back);
+}
+
+void MemoryCard::disappear()
+{
+    this->matched();
+    this->deleteLater();
 }
